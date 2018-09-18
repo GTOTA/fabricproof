@@ -84,9 +84,12 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	} else if function == "query" {
 		// the old "Query" is now implemtned in invoke
 		return t.query(stub, args)
-	}
+	} else if function == "addPic" {
+                // the old "Query" is now implemtned in invoke
+                return t.addPic(stub, args)
+        }
 
-	return shim.Error("Invalid invoke function name. Expecting \"move\" \"delete\" \"query\"")
+	return shim.Error("Invalid invoke function name. Expecting \"move\" \"delete\" \"query\" \"addPic\"")
 }
 
 // Transaction makes payment of X units from A to B
@@ -144,6 +147,32 @@ func (t *SimpleChaincode) move(stub shim.ChaincodeStubInterface, args []string) 
 	}
 
 	return shim.Success(nil)
+}
+
+
+//Transaction add proof of pic hashcode from A to B
+func (t *SimpleChaincode) addPic(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+        var A, B string    // Entities
+        var H string       // Transaction pic hashcode
+        var err error
+
+        if len(args) != 3 {
+                return shim.Error("Incorrect number of arguments. Expecting 3")
+        }
+
+        A = args[0]
+        B = args[1]
+        fmt.Printf("From  %s to %s\n", A, B);
+	 // Perform the execution
+        H = args[2];
+        fmt.Printf("save hashcode %s\n",H);
+	err = stub.PutState("picID", []byte(H))
+        if err != nil {
+                return shim.Error(err.Error())
+        }
+
+        return shim.Success(nil)
+
 }
 
 // Deletes an entity from state
