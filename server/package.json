@@ -1,6 +1,6 @@
 {
-  "name": "fabric-rest",
-  "version": "0.12.0",
+  "name": "fabric-proof",
+  "version": "0.0.1",
   "description": "API server for Hyperledger Fabric 1.x",
   "main": "app/index.js",
   "keywords": [
@@ -33,7 +33,8 @@
     "fs-extra": "^2.0.0",
     "jsonwebtoken": "^7.3.0",
     "log4js": "^0.6.38",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "ipfs-api": "^24.0.1"
   },
   "devDependencies": {
     "jshint": "^2.9.6",

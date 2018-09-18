@@ -51,7 +51,7 @@ services:
   api-base:
 #    build: ../server
 #    image: altoros/fabric-rest
-    image: maxxx1313/fabric-rest
+    image: chegvra/fabric-proof:0.0.1
     volumes:
      - ../artifacts:/usr/src/artifacts
     command: npm start

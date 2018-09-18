@@ -30,15 +30,26 @@
   </div>
 
   <div class="form-group">
+      <label for="ccarguments">Function arguments (json)</label>
     <div class="input-field col s12 invalid">
       <textarea id="ccarguments" name="ccarguments"
         class="materialize-textarea" ng-class="{invalid:form.ccarguments.$invalid}"
         ng-model="args" validate-json></textarea>
-      <label for="ccarguments">Function arguments (json)</label>
     </div>
     <div data-error="Invalid json" ng-class="{transparent:!form.ccarguments.$error.json}"></div>
   </div>
 
+  <div class="form-group">
+     <label for="upfile" class="col-sm-2 control-label">Upload pic</label>
+     <div class="col-sm-10">
+           <input  type="file"  fileread="images" accept="image/png,image/jpg,image/jpeg,image/gif" name="fabricImages" />
+	   <button type="button" class="btn btn-secondary" value = "submit" ng-click="ctl.upload()">upload</button>
+     </div>
+     <div class="col-sm-10">
+      <input type="text" class="form-control" id="imagehash" placeholder=" image hashcode" ng-model="imagehash">
+    </div>
+
+  </div>
 </form>
 
 <!-- invoke -->
@@ -51,6 +62,13 @@
 <div ng-hide="ctl.invokeInProgress">
   <button class="btn btn-primary" type="button" ng-click="ctl.query(selectedChannel, selectedCc, selectedPeers[0], fcn, args)" ng-disabled="form.$invalid">Query</button>
   <button class="btn btn-flat" type="button" ng-click="fcn='query'; args='[&quot;a&quot;]'">Fill with sample query</button>
+</div>
+
+<br>
+<!-- addPic -->
+<div ng-hide="ctl.invokeInProgress">
+  <button class="btn btn-primary" type="button" ng-click="ctl.invoke(selectedChannel, selectedCc, selectedPeers, fcn, args)" ng-disabled="form.$invalid">addPic</button>
+  <button class="btn btn-flat" type="button" ng-click="fcn='addPic'; args= '[&quot;a&quot;, &quot;b&quot;,&quot;'+imagehash+'&quot;]'">Fill with sample addPic</button>
 </div>
 
 <div class="progress" ng-show="ctl.invokeInProgress">
@@ -79,6 +97,11 @@
     <div id="tab-result" class="col s12">
       <!-- <json-formatter open="1" json="ctl.transaction.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset"></json-formatter> -->
       <json-formatter open="2" json="ctl.result"></json-formatter>
+      <button class="btn btn-flat" type="button" ng-click="ctl.view(ctl.result.mycc.picID)">view Pic</button>
+      <div ng-if="content">
+        <h2>Pic content is:</h2>
+	<img ng-src="data:image/png;base64,{{content}}">
+      </div>
     </div>
 
     <div id="tab-info" class="col s12">
@@ -102,3 +125,4 @@
 </div>
 
 <div style="height: 200px"></div>
+

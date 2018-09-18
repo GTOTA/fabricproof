@@ -390,6 +390,91 @@ app.get('/channels/:channelName/config', function(req, res) {
 });
 
 
+var IPFS = require('ipfs-api')
+
+function addIpfsPromise(data) {
+  return new Promise(function(resolve, reject){
+    var ipfs = IPFS({host: process.env.IPFS_ADDRESS, port: process.env.IPFS_PORT, protocol: "http"})
+    logger.debug('process.env.IPFS_ADDRESS : ' + process.env.IPFS_ADDRESS);
+    ipfs.add(Buffer.from(data), function (err, res) {
+    return !err ?
+        resolve(res) :
+        reject(err);
+
+    });
+  });
+}
+
+function readIpfsPromise(hash) {
+  return new Promise(function(resolve, reject){
+    var ipfs = IPFS({host: process.env.IPFS_ADDRESS, port: process.env.IPFS_PORT, protocol: "http"})
+    ipfs.get(hash, {buffer: true}, function (err, files) {
+       return !err ?
+        resolve(files[0].content) :
+        reject(err);
+     });
+  });
+}
+
+function readMapPromise (res) {
+  return new Promise(function(resolve, reject){
+    res.forEach(function (file, err) {
+      return !err ?
+        resolve(file) :
+        reject(err);
+    });
+  });
+}
+
+app.post('/uploadFile', function (req, res) {
+    var formidable = require("formidable");
+    var form = new formidable.IncomingForm();
+    console.log("about to parse");
+    form.parse(req, function(error, fields, files) {
+        //console.log("parsing done " + JSON.stringify(files));
+	var filePath='';
+	for(var key in files){
+            if( files[key].path && filePath==='' ){
+		filePath = files[key].path;
+		break;
+	    }
+	}
+
+        if(!filePath) {
+	    res.error(getErrorMessage('\'filePath\''));
+            return;
+	}
+	res.promise(
+            tools.readFilePromise(filePath)
+	    .then(function(data) {
+		return addIpfsPromise(data);
+	    }).then(function(res){
+                return readMapPromise(res);
+            }).then(function(file){
+                console.log("file hash" + file.hash);
+		return file.hash;
+	    })
+	);
+    });
+});
+
+// Query on chaincode on target peers
+app.get('/viewFile', function(req, res) {
+    logger.debug('==================== ViewFile BY fileID ==================');
+    var fileID   = req.query.fileID;
+    logger.debug('fileID  : ' + fileID);
+    if (!fileID) {
+      res.error(getErrorMessage('\'fileID\''));
+      return;
+    }
+    //res.promise(
+	readIpfsPromise(fileID).then(function(buffer){
+	     res.contentType('image/png');
+	     res.send(buffer);
+	     //return buffer;
+	})
+    //);
+});
 
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, res) {

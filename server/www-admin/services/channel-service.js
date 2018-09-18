@@ -83,6 +83,21 @@ function ChannelService(ApiService, $q) {
     return ApiService.sc.query(channelId, contractId, peer, fcn, args);
   };
 
+  /**
+   * @param {obj} file
+   * @param {string} action
+   */
+  ChannelService.upload = function(file, action){
+    return ApiService.files.upload(file, action);
+  };
+
+   /**
+   * @param {obj} file
+   * @param {string} action
+   */
+  ChannelService.view = function(fileID){
+    return ApiService.files.view(fileID);
+  };	
 }
 
 angular.module('nsd.service.channel', ['nsd.service.api'])

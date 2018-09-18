@@ -86,13 +86,23 @@ function ApiService($log, $http, env) {
   };
 
 
+   ApiService.files = {};
 
-
-
-
-
-
-
+   ApiService.files.upload = function(file, action){
+       var fd = new FormData(); 
+       fd.append('file', file); 
+       $log.warn("cfg.api:" +env.api);
+       return $http.post(cfg.api + action, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+       }).then(function(response){ return response.data; });
+   }	
+   
+   ApiService.files.view = function(fileID) {
+       var params = {fileID: fileID};
+       return $http.get(cfg.api+'/viewFile', {params:params})
+          .then(function(response){ $log.warn("length:" +response.data.length);return response.data; });
+   }
   /**
    * Channel module
    */

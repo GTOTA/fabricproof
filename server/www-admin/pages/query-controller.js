@@ -47,6 +47,32 @@ function QueryController($scope, ChannelService, ConfigLoader, $log, $q) {
   };
 
 
+  ctl.upload = function() {
+     var file = $scope.images;
+     var action = '/uploadFile';
+     if(!file){
+      return $q.resolve([]);
+    }
+
+    return ChannelService.upload(file, action).then(function(data){
+       ctl.result = data;
+       $scope.imagehash = data;
+       //$log.warn("data:"+data);
+    });
+  }
+
+   ctl.view = function(picID) {
+     $log.warn("picID-----------"+picID);
+     if(!picID){
+      return $q.resolve([]);
+    }
+
+    return ChannelService.view(picID).then(function(data){
+	    //var blob = new Blob([data], {type: "image/png"});
+	    //$scope.content = URL.createObjectURL(blob );
+	    $scope.content = data;
+    });
+  }
 
   ctl.invoke = function(channel, cc, peers, fcn, args){
     try{
@@ -66,6 +92,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log, $q) {
       .then(function(transaction){
         ctl.transaction = transaction;
         ctl.result = getTxResult(transaction);
+	$log.warn(ctl.result);
       })
       .catch(function(response){
         ctl.error = response.data || response;
@@ -125,7 +152,7 @@ function QueryController($scope, ChannelService, ConfigLoader, $log, $q) {
       });
   };
 
-
+  
   //
   ctl.getChannels();
   $scope.$watch('selectedChannel', ctl.getChaincodes );
@@ -134,4 +161,20 @@ function QueryController($scope, ChannelService, ConfigLoader, $log, $q) {
 
 
 angular.module('nsd.controller.query', ['nsd.service.channel'])
-  .controller('QueryController', QueryController);
+  .controller('QueryController', QueryController)
+  .directive("fileread", [function () {
+    return {
+        scope: {
+            fileread: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                scope.$apply(function () {
+                    scope.fileread = changeEvent.target.files[0];
+                    // or all selected files:
+                    // scope.fileread = changeEvent.target.files;
+                });
+            });
+        }
+    }
+}]);
