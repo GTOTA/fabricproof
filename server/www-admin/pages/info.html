@@ -30,7 +30,7 @@
 </div>
 
 <div ng-show="selectedChannel">
-
+   
 
   <h2>Instatiated Chaincodes ({{ctl.channelChaincodes.length||0}})</h2>
   <ul class="list">
@@ -40,6 +40,15 @@
   <h2>Last block</h2>
   <json-formatter open="1" json="ctl.blockInfo"></json-formatter>
 
+  <h2>View pic</h2>
+  <div class="row">
+  <input type="text"  class="form-control" placeholder="Pic ID"  ng-model="picID"/>
+  <button class="btn btn-flat" type="button" ng-click="ctl.view(picID)">view</button>
+  <div ng-if="content">
+       <h2>Pic content is:</h2>
+        <img ng-src="data:image/png;base64,{{content}}">
+      </div>
+  </div>
 
   <h2>Last transaction</h2>
   <div class="row">

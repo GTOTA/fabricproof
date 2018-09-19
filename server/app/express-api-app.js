@@ -453,7 +453,7 @@ app.post('/uploadFile', function (req, res) {
             }).then(function(file){
                 console.log("file hash" + file.hash);
 		return file.hash;
-	    })
+	    }).catch(function(err){console.log(err);res.error("add ipfs err");})
 	);
     });
 });
@@ -469,10 +469,10 @@ app.get('/viewFile', function(req, res) {
     }
     //res.promise(
 	readIpfsPromise(fileID).then(function(buffer){
-	     res.contentType('image/png');
+	     //res.contentType('image/png');
 	     res.send(buffer);
 	     //return buffer;
-	})
+	}).catch(function(err){console.log(err);res.error("read ipfs err");})
     //);
 });
 

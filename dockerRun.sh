@@ -1,0 +1,1 @@
+docker run  -it -v $PWD/artifacts:/usr/src/artifacts -v $PWD/server/www-admin:/usr/src/app/www-admin -e ORG=org1 -e IPFS_ADDRESS=$1 -e IPFS_PORT=5001 -v $PWD/server/app:/usr/src/app/app -v $PWD/server/lib:/usr/src/app/lib -p 9000:4000  --network ledger_default chegvra/fabric-proof:0.0.1 /bin/sh

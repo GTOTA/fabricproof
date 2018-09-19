@@ -45,7 +45,16 @@ function InfoController(ChannelService, ConfigLoader, $scope, $log) {
 
 
 
+   ctl.view = function(picID) {
+     $log.warn("picID-----------"+picID);
+     if(!picID){
+      return $q.resolve([]);
+     }
 
+      return ChannelService.view(picID).then(function(data){
+         $scope.content = data;
+      });
+    }	   
 
   ctl.getLastBlock = function(channelId){
     ctl.blockInfo = null;
