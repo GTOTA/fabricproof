@@ -563,7 +563,8 @@ function _setClientContextFromCA(client, username, orgID) {
             .then(function(adminUserObj) {
               return caService.register({
                 enrollmentID: username,
-                affiliation: orgID + '.department1'
+                affiliation: orgID + '.department1',
+		role: 'client'
               }, adminUserObj);
             }).then((secret) => {
               enrollmentSecret = secret;
